@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_metal"]
+albedo_color = Color(0.32, 0.36, 0.42, 1)
+metallic = 0.8
+roughness = 0.35
+
+[sub_resource type="BoxMesh" id="BoxMesh_metal"]
+size = Vector3(1, 1, 1)
+material = SubResource("StandardMaterial3D_metal")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_metal"]
+size = Vector3(1, 1, 1)
+
+[node name="MetalBlock" type="StaticBody3D"]
+metadata/_edit_group_ = true
+metadata/block_id = "metal_1x1x1"
+metadata/block_size = Vector3(1, 1, 1)
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_metal")
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_metal")
