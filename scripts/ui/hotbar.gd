@@ -10,6 +10,7 @@ const ITEM_LABELS: Dictionary[String, String] = {
 	"half_cube_1x1x1": "Half",
 	"wedge_1x1x1": "Wedge",
 	"cone_1x1x1": "Cone",
+	"quarter_cube_1x1x1": "Quarter",
 }
 
 @export var inventory_path: NodePath
