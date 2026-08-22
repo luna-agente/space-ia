@@ -7,6 +7,8 @@ const SLOT_COUNT: int = 10
 
 var selected_slot: int = 0
 var slots: Array[Button] = []
+var icon_cache: Dictionary[String, Texture2D] = {}
+var icon_viewports: Dictionary[String, SubViewport] = {}
 @onready var inventory: PlayerInventory = get_node(inventory_path) as PlayerInventory
 @onready var catalog: BlockCatalog = get_node(catalog_path) as BlockCatalog
 
@@ -55,20 +57,39 @@ func _update_slot_icon(button: Button, item_id: String) -> void:
 	if item_id.is_empty():
 		button.icon = null
 		return
+
+	if icon_cache.has(item_id):
+		button.icon = icon_cache[item_id]
+		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		button.expand_icon = true
+		return
+
 	var definition: BlockDefinition = catalog.registry.get_definition(item_id)
 	if definition == null or definition.scene == null:
 		button.icon = null
 		return
-	button.icon = _create_block_icon(definition.scene)
+
+	var icon: Texture2D = _create_block_icon(definition.scene, item_id)
+	if icon == null:
+		button.icon = null
+		return
+
+	icon_cache[item_id] = icon
+	button.icon = icon
 	button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	button.expand_icon = true
 
-func _create_block_icon(scene: PackedScene) -> Texture2D:
+func _create_block_icon(scene: PackedScene, item_id: String) -> Texture2D:
+	if icon_viewports.has(item_id):
+		return icon_viewports[item_id].get_texture()
+
 	var viewport: SubViewport = SubViewport.new()
+	viewport.name = "BlockIcon_%s" % item_id
 	viewport.size = Vector2i(56, 40)
 	viewport.transparent_bg = true
 	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	viewport.own_world_3d = true
+	add_child(viewport)
 
 	var root: Node3D = scene.instantiate() as Node3D
 	if root == null:
@@ -88,12 +109,8 @@ func _create_block_icon(scene: PackedScene) -> Texture2D:
 	light.shadow_enabled = false
 	viewport.add_child(light)
 
-	add_child(viewport)
-	await RenderingServer.frame_post_draw
-	var image: Image = viewport.get_texture().get_image()
-	var texture: ImageTexture = ImageTexture.create_from_image(image)
-	viewport.queue_free()
-	return texture
+	icon_viewports[item_id] = viewport
+	return viewport.get_texture()
 
 func _number_from_key(keycode: Key) -> int:
 	match keycode:
