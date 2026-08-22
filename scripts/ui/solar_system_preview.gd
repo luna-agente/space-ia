@@ -41,8 +41,8 @@ func _create_scene() -> void:
 	root.add_child(environment)
 
 	var camera: Camera3D = Camera3D.new()
-	camera.position = Vector3(0.0, 1.6, 21.0)
-	camera.look_at_from_position(camera.position, Vector3(2.2, 0.4, 0.0))
+	camera.position = Vector3(0.0, 5.0, 20.5)
+	camera.look_at_from_position(camera.position, Vector3(2.2, 4.2, 0.0))
 	camera.fov = 42.0
 	camera.current = true
 	root.add_child(camera)
