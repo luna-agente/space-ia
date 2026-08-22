@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/blocks/metal_block.tscn" id="1_metal_block"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hotbar.tscn" id="2_hotbar"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="3_player"]
 
 [sub_resource type="Environment" id="Environment_space"]
 background_mode = 1
@@ -16,9 +17,8 @@ environment = SubResource("Environment_space")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 rotation_degrees = Vector3(-35, -25, 0)
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="Player" parent="." instance=ExtResource("3_player")]
 position = Vector3(0, 0, 4)
-current = true
 
 [node name="MetalBlock" parent="." instance=ExtResource("1_metal_block")]
 
