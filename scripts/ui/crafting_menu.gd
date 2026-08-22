@@ -76,8 +76,6 @@ func _refresh_blocks() -> void:
 		button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		button.expand_icon = true
-		button.icon_max_width = 72
-		button.icon_max_height = 72
 		button.tooltip_text = "%s\nCategoria: %s" % [definition.display_name, definition.category.capitalize()]
 		block_grid.add_child(button)
 		button.icon = await _get_block_icon(definition)
