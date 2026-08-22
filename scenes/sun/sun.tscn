@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sun"]
+albedo_color = Color(1, 0.78, 0.18, 1)
+emission_enabled = true
+emission = Color(1, 0.55, 0.08, 1)
+emission_energy_multiplier = 3.0
+shading_mode = 0
+
+[sub_resource type="SphereMesh" id="SphereMesh_sun"]
+radius = 6.0
+height = 12.0
+material = SubResource("StandardMaterial3D_sun")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_sun"]
+radius = 6.0
+
+[node name="Sun" type="Node3D"]
+metadata/gravity_source = false
+
+[node name="Visual" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_sun")
+
+[node name="Light" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-35, -25, 0)
+light_energy = 1.5
+shadow_enabled = true
+
+[node name="Collision" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_sun")
+disabled = true
