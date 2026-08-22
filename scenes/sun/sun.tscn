@@ -8,20 +8,22 @@ emission_energy_multiplier = 3.0
 shading_mode = 0
 
 [sub_resource type="SphereMesh" id="SphereMesh_sun"]
-radius = 500000.0
-height = 1000000.0
+radius = 50000000.0
+height = 100000000.0
 radial_segments = 64
 rings = 32
 material = SubResource("StandardMaterial3D_sun")
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_sun"]
-radius = 500000.0
+radius = 50000000.0
 
 [node name="Sun" type="Node3D"]
 metadata/gravity_source = false
 metadata/solar_body = true
-metadata/diameter_m = 1000000.0
-metadata/radius_m = 500000.0
+metadata/fixed_position = true
+metadata/diameter_m = 100000000.0
+metadata/radius_m = 50000000.0
+metadata/temperature_k = 5500.0
 
 [node name="Visual" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_sun")
