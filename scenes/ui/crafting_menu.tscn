@@ -1,0 +1,80 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/crafting_menu.gd" id="1_crafting"]
+
+[node name="CraftingMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 1
+script = ExtResource("1_crafting")
+inventory_path = NodePath("../../Inventory")
+catalog_path = NodePath("../../BlockCatalog")
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -570.0
+offset_top = -320.0
+offset_right = 570.0
+offset_bottom = 320.0
+
+[node name="Margin" type="MarginContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 22
+
+[node name="VBox" type="VBoxContainer" parent="Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Panel/Margin/VBox"]
+layout_mode = 2
+text = "Criação / Catálogo de Blocos"
+horizontal_alignment = 1
+
+[node name="Body" type="HBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="Categories" type="PanelContainer" parent="Panel/Margin/VBox/Body"]
+layout_mode = 2
+custom_minimum_size = Vector2(180, 0)
+
+[node name="CategoryList" type="VBoxContainer" parent="Panel/Margin/VBox/Body/Categories"]
+layout_mode = 2
+
+[node name="Blocks" type="PanelContainer" parent="Panel/Margin/VBox/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BlockList" type="VBoxContainer" parent="Panel/Margin/VBox/Body/Blocks"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Footer" type="VBoxContainer" parent="Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Status" type="Label" parent="Panel/Margin/VBox/Footer"]
+layout_mode = 2
+text = "Selecione um bloco para atribuí-lo a um slot da hotbar."
+horizontal_alignment = 1
+
+[node name="HotbarList" type="HBoxContainer" parent="Panel/Margin/VBox/Footer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 5
+
+[node name="Hint" type="Label" parent="Panel/Margin/VBox/Footer"]
+layout_mode = 2
+text = "T fecha • I abre inventário • Clique em um slot para atribuir o bloco selecionado"
+horizontal_alignment = 1
