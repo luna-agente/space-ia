@@ -8,6 +8,7 @@ const CUBE_1X2X1_SCENE: PackedScene = preload("res://scenes/blocks/cube_1x2x1_bl
 const HALF_CUBE_SCENE: PackedScene = preload("res://scenes/blocks/half_cube_block.tscn")
 const WEDGE_SCENE: PackedScene = preload("res://scenes/blocks/wedge_block.tscn")
 const CONE_SCENE: PackedScene = preload("res://scenes/blocks/cone_block.tscn")
+const QUARTER_CUBE_SCENE: PackedScene = preload("res://scenes/blocks/quarter_cube_block.tscn")
 
 var _definitions: Dictionary[String, BlockDefinition] = {}
 
@@ -19,6 +20,7 @@ func _init() -> void:
 	_register(BlockDefinition.new("half_cube_1x1x1", "Half Cube", "structural", Vector3.ONE, HALF_CUBE_SCENE))
 	_register(BlockDefinition.new("wedge_1x1x1", "Wedge", "structural", Vector3.ONE, WEDGE_SCENE))
 	_register(BlockDefinition.new("cone_1x1x1", "Cone", "structural", Vector3.ONE, CONE_SCENE))
+	_register(BlockDefinition.new("quarter_cube_1x1x1", "Quarter Cube", "structural", Vector3.ONE, QUARTER_CUBE_SCENE))
 
 func _register(definition: BlockDefinition) -> void:
 	_definitions[definition.id] = definition
