@@ -10,8 +10,8 @@ extends Control
 @onready var hotbar_list: HBoxContainer = $Panel/Margin/Footer/HotbarList
 @onready var status_label: Label = $Panel/Margin/Footer/Status
 
-var active_category := "All"
-var selected_block_id := ""
+var active_category: String = "All"
+var selected_block_id: String = ""
 
 func _ready() -> void:
 	visible = false
@@ -22,23 +22,11 @@ func _ready() -> void:
 func toggle() -> void:
 	visible = not visible
 	if visible:
-		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		_refresh_blocks()
 		_refresh_hotbar()
-	else:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_T:
-			toggle()
-			get_viewport().set_input_as_handled()
-		elif visible and event.keycode == KEY_ESCAPE:
-			toggle()
-			get_viewport().set_input_as_handled()
 
 func _build_categories() -> void:
-	for child in category_list.get_children():
+	for child: Node in category_list.get_children():
 		child.queue_free()
 	_add_category_button("All")
 	for category: String in catalog.registry.get_categories():
@@ -57,7 +45,7 @@ func _select_category(category: String) -> void:
 	_refresh_blocks()
 
 func _refresh_blocks() -> void:
-	for child in block_list.get_children():
+	for child: Node in block_list.get_children():
 		child.queue_free()
 
 	for item_id: String in catalog.registry.get_all_ids():
@@ -76,16 +64,17 @@ func _refresh_blocks() -> void:
 
 func _select_block(block_id: String) -> void:
 	selected_block_id = block_id
-	status_label.text = "%s selecionado. Agora clique em um slot da hotbar." % catalog.registry.get_definition(block_id).display_name
+	var definition: BlockDefinition = catalog.registry.get_definition(block_id)
+	status_label.text = "%s selecionado. Agora clique em um slot da hotbar." % definition.display_name if definition != null else "Bloco selecionado."
 	_refresh_hotbar()
 
 func _refresh_hotbar() -> void:
-	for child in hotbar_list.get_children():
+	for child: Node in hotbar_list.get_children():
 		child.queue_free()
 
 	for slot_index: int in range(PlayerInventory.SLOT_COUNT):
 		var item_id: String = inventory.get_hotbar_item(slot_index)
-		var label: String = inventory.get_item_display_name(item_id) if not item_id.is_empty() else "Vazio"
+		var label: String = inventory.get_item_display_name(item_id)
 		var key_number: int = slot_index + 1 if slot_index < 9 else 0
 		var button: Button = Button.new()
 		button.text = "%d\n%s" % [key_number, label]
@@ -99,5 +88,6 @@ func _assign_to_hotbar(slot_index: int) -> void:
 		status_label.text = "Selecione um bloco primeiro."
 		return
 	inventory.set_hotbar_item(slot_index, selected_block_id)
-	status_label.text = "%s atribuído ao slot %d." % [inventory.get_item_display_name(selected_block_id), slot_index + 1 if slot_index < 9 else 10]
+	var slot_number: int = slot_index + 1 if slot_index < 9 else 10
+	status_label.text = "%s atribuído ao slot %d." % [inventory.get_item_display_name(selected_block_id), slot_number]
 	_refresh_hotbar()
