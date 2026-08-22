@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/sun/sun.tscn" id="1_sun"]
 [ext_resource type="PackedScene" path="res://scenes/blocks/metal_block.tscn" id="2_metal_block"]
@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/crafting_menu.tscn" id="9_crafting_menu"]
 [ext_resource type="Script" path="res://scripts/ui/ui_manager.gd" id="10_ui_manager"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="11_pause_menu"]
-[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="12_main_menu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/main_menu.tscn" id="12_main_menu"]
 
 [sub_resource type="Environment" id="Environment_space"]
 background_mode = 1
@@ -63,14 +63,6 @@ crafting_menu_path = NodePath("../UI/CraftingMenu")
 hotbar_path = NodePath("../UI/Hotbar")
 player_path = NodePath("../Player")
 pause_menu_path = NodePath("../UI/PauseMenu")
+main_menu_path = NodePath("../MainMenu")
 
-[node name="MainMenu" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-script = ExtResource("12_main_menu")
-gameplay_root_path = NodePath("../Gameplay")
-menu_root_path = NodePath(".")
-
-[node name="Gameplay" type="Node" parent="."]
+[node name="MainMenu" parent="." instance=ExtResource("12_main_menu")]
