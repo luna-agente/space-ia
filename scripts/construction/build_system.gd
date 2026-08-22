@@ -12,7 +12,7 @@ const ROTATION_STEP: float = 90.0
 var preview: Node3D
 var preview_mesh: MeshInstance3D
 var preview_material: StandardMaterial3D
-var rotation_degrees: Vector3 = Vector3.ZERO
+var block_rotation_degrees: Vector3 = Vector3.ZERO
 
 @onready var camera: Camera3D = get_node(camera_path) as Camera3D
 @onready var blocks_root: Node3D = get_node(blocks_root_path) as Node3D
@@ -62,15 +62,15 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 
 func _rotate_preview(rotation_delta: Vector3) -> void:
-	rotation_degrees += rotation_delta
-	rotation_degrees.x = fposmod(rotation_degrees.x, 360.0)
-	rotation_degrees.y = fposmod(rotation_degrees.y, 360.0)
-	rotation_degrees.z = fposmod(rotation_degrees.z, 360.0)
+	block_rotation_degrees += rotation_delta
+	block_rotation_degrees.x = fposmod(block_rotation_degrees.x, 360.0)
+	block_rotation_degrees.y = fposmod(block_rotation_degrees.y, 360.0)
+	block_rotation_degrees.z = fposmod(block_rotation_degrees.z, 360.0)
 	_apply_preview_rotation()
 
 func _apply_preview_rotation() -> void:
 	if is_instance_valid(preview):
-		preview.rotation_degrees = rotation_degrees
+		preview.rotation_degrees = block_rotation_degrees
 
 func _raycast_from_camera() -> Dictionary:
 	var center: Vector2 = get_viewport().get_visible_rect().size * 0.5
@@ -106,7 +106,7 @@ func _build_block() -> void:
 	if block == null:
 		return
 	block.position = candidate
-	block.rotation_degrees = rotation_degrees
+	block.rotation_degrees = block_rotation_degrees
 	blocks_root.add_child(block)
 
 func _remove_block() -> void:
