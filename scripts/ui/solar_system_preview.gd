@@ -3,7 +3,8 @@ extends SubViewport
 @export var orbit_speed: float = 0.25
 
 var orbit_times: Array[float] = [0.0, 2.0, 4.2]
-var orbit_radii: Array[float] = [3.4, 5.7, 8.2]
+# Every orbit remains safely outside the sun radius (1.35).
+var orbit_radii: Array[float] = [4.0, 6.8, 9.8]
 var orbit_sizes: Array[float] = [0.45, 0.7, 0.95]
 var planet_colors: Array[Color] = [
 	Color(0.25, 0.55, 0.95),
@@ -22,7 +23,7 @@ func _process(delta: float) -> void:
 		orbit_times[index] += delta * orbit_speed * (1.0 + index * 0.18)
 		var angle: float = orbit_times[index]
 		var radius: float = orbit_radii[index]
-		planets[index].position = Vector3(cos(angle) * radius, sin(angle * 0.72) * 0.65, sin(angle) * radius)
+		planets[index].position = Vector3(2.2 + cos(angle) * radius, sin(angle * 0.72) * 0.65, sin(angle) * radius)
 		planets[index].rotation.y += delta * (0.45 + index * 0.15)
 	if is_instance_valid(sun):
 		sun.rotation.y += delta * 0.08
@@ -40,7 +41,7 @@ func _create_scene() -> void:
 	root.add_child(environment)
 
 	var camera: Camera3D = Camera3D.new()
-	camera.position = Vector3(0.0, 1.6, 18.5)
+	camera.position = Vector3(0.0, 1.6, 21.0)
 	camera.look_at_from_position(camera.position, Vector3(2.2, 0.4, 0.0))
 	camera.fov = 42.0
 	camera.current = true
