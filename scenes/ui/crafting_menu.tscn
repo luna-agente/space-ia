@@ -56,9 +56,12 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="BlockList" type="VBoxContainer" parent="Panel/Margin/VBox/Body/Blocks"]
+[node name="BlockGrid" type="GridContainer" parent="Panel/Margin/VBox/Body/Blocks"]
 layout_mode = 2
-theme_override_constants/separation = 8
+size_flags_vertical = 3
+columns = 5
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
 
 [node name="Footer" type="VBoxContainer" parent="Panel/Margin/VBox"]
 layout_mode = 2
