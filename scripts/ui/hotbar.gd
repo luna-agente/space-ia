@@ -1,18 +1,29 @@
 extends HBoxContainer
 
 const SLOT_COUNT := 10
-var selected_slot := 1
+const ITEM_LABELS := {
+	"": "—",
+	"metal_1x1x1": "Metal",
+	"triangle_1x1x1": "Tri",
+	"cylinder_1x1x1": "Cyl",
+}
+
+@export var inventory_path: NodePath
+
+var selected_slot := 0
 var slots: Array[Button] = []
+@onready var inventory: PlayerInventory = get_node(inventory_path)
 
 func _ready() -> void:
 	for index in range(SLOT_COUNT):
 		var slot := Button.new()
-		slot.custom_minimum_size = Vector2(52, 52)
-		slot.text = str(index + 1)
+		slot.custom_minimum_size = Vector2(68, 58)
 		slot.focus_mode = Control.FOCUS_NONE
 		slot.mouse_default_cursor_shape = Control.CURSOR_ARROW
+		slot.pressed.connect(select_slot.bind(index))
 		add_child(slot)
 		slots.append(slot)
+
 	_update_selection()
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -21,18 +32,24 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 	var number := _number_from_key(event.keycode)
 	if number >= 1 and number <= SLOT_COUNT:
-		select_slot(number)
+		select_slot(number - 1)
 		get_viewport().set_input_as_handled()
 
-func select_slot(slot_number: int) -> void:
-	selected_slot = clampi(slot_number, 1, SLOT_COUNT)
+func select_slot(slot_index: int) -> void:
+	selected_slot = clampi(slot_index, 0, SLOT_COUNT - 1)
+	inventory.select_slot(selected_slot)
 	_update_selection()
+
+func get_selected_item() -> String:
+	return inventory.get_selected_item()
 
 func _update_selection() -> void:
 	for index in slots.size():
-		var slot_number := index + 1
-		slots[index].text = "[%d]" % slot_number if slot_number == selected_slot else str(slot_number)
-		slots[index].modulate = Color(1.0, 1.0, 0.65) if slot_number == selected_slot else Color.WHITE
+		var item_id := inventory.get_item(index)
+		var key_number := index + 1 if index < 9 else 0
+		var label := ITEM_LABELS.get(item_id, item_id)
+		slots[index].text = "%d\n%s" % [key_number, label]
+		slots[index].modulate = Color(1.0, 1.0, 0.65) if index == selected_slot else Color.WHITE
 
 func _number_from_key(keycode: Key) -> int:
 	match keycode:
