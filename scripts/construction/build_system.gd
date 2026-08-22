@@ -2,10 +2,16 @@ extends Node3D
 
 const GRID_SIZE := 1.0
 const RAY_LENGTH := 100.0
-const BLOCK_SCENE := preload("res://scenes/blocks/metal_block.tscn")
+
+const BLOCK_SCENES := {
+	"metal_1x1x1": preload("res://scenes/blocks/metal_block.tscn"),
+	"triangle_1x1x1": preload("res://scenes/blocks/triangle_block.tscn"),
+	"cylinder_1x1x1": preload("res://scenes/blocks/cylinder_block.tscn"),
+}
 
 @export var camera_path: NodePath
 @export var blocks_root_path: NodePath
+@export var hotbar_path: NodePath
 
 var preview: Node3D
 var preview_mesh: MeshInstance3D
@@ -13,6 +19,7 @@ var preview_material: StandardMaterial3D
 
 @onready var camera: Camera3D = get_node(camera_path)
 @onready var blocks_root: Node3D = get_node(blocks_root_path)
+@onready var hotbar: HBoxContainer = get_node(hotbar_path)
 
 func _ready() -> void:
 	_create_preview()
@@ -55,6 +62,10 @@ func _snap_position(position_value: Vector3) -> Vector3:
 	)
 
 func _build_block() -> void:
+	var item_id: String = hotbar.get_selected_item()
+	if item_id.is_empty() or not BLOCK_SCENES.has(item_id):
+		return
+
 	var hit := _raycast_from_camera()
 	if hit.is_empty():
 		return
@@ -64,7 +75,8 @@ func _build_block() -> void:
 	if _has_block_at(candidate):
 		return
 
-	var block := BLOCK_SCENE.instantiate()
+	var block_scene: PackedScene = BLOCK_SCENES[item_id]
+	var block := block_scene.instantiate()
 	block.position = candidate
 	blocks_root.add_child(block)
 
@@ -76,7 +88,7 @@ func _remove_block() -> void:
 	var collider: Object = hit.collider
 	if collider is Node:
 		var node := collider as Node
-		if node.get_meta("block_id", "") == "metal_1x1x1":
+		if node.has_meta("block_id"):
 			node.queue_free()
 
 func _has_block_at(target_position: Vector3) -> bool:
@@ -86,11 +98,13 @@ func _has_block_at(target_position: Vector3) -> bool:
 	return false
 
 func _create_preview() -> void:
-	preview = BLOCK_SCENE.instantiate()
+	preview = BLOCK_SCENES["metal_1x1x1"].instantiate()
 	preview.name = "BuildPreview"
 	preview.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(preview)
+	_set_preview_material()
 
+func _set_preview_material() -> void:
 	preview_material = StandardMaterial3D.new()
 	preview_material.albedo_color = Color(0.25, 0.8, 1.0, 0.35)
 	preview_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -104,4 +118,25 @@ func _create_preview() -> void:
 	if collision:
 		collision.set_deferred("disabled", true)
 
-	preview.visible = false
+func _update_preview_block() -> void:
+	var item_id: String = hotbar.get_selected_item()
+	if item_id.is_empty() or not BLOCK_SCENES.has(item_id):
+		preview.visible = false
+		return
+
+	var current_id := str(preview.get_meta("block_id", ""))
+	if current_id == item_id:
+		return
+
+	var old_position := preview.position
+	preview.queue_free()
+	preview = BLOCK_SCENES[item_id].instantiate()
+	preview.name = "BuildPreview"
+	preview.process_mode = Node.PROCESS_MODE_DISABLED
+	add_child(preview)
+	preview.position = old_position
+	_set_preview_material()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PROCESS:
+		_update_preview_block()
