@@ -12,6 +12,7 @@ const CUBE_1X2X1 := "cube_1x2x1"
 const HALF_CUBE := "half_cube_1x1x1"
 const WEDGE := "wedge_1x1x1"
 const CONE := "cone_1x1x1"
+const QUARTER_CUBE := "quarter_cube_1x1x1"
 
 var slots: Array[String] = [
 	METAL,
@@ -21,12 +22,12 @@ var slots: Array[String] = [
 	HALF_CUBE,
 	WEDGE,
 	CONE,
-	EMPTY,
+	QUARTER_CUBE,
 	EMPTY,
 	EMPTY,
 ]
 
-var selected_slot := 0
+var selected_slot: int = 0
 
 func select_slot(slot_index: int) -> void:
 	selected_slot = clampi(slot_index, 0, SLOT_COUNT - 1)
