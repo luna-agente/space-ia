@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/sun/sun.tscn" id="1_sun"]
+[ext_resource type="PackedScene" path="res://scenes/solar_system/solar_system.tscn" id="1_solar_system"]
 [ext_resource type="PackedScene" path="res://scenes/blocks/metal_block.tscn" id="2_metal_block"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hotbar.tscn" id="3_hotbar"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="4_player"]
@@ -23,7 +23,7 @@ background_color = Color(0.005, 0.008, 0.02, 1)
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_space")
 
-[node name="Sun" parent="." instance=ExtResource("1_sun")]
+[node name="SolarSystem" parent="." instance=ExtResource("1_solar_system")]
 
 [node name="BlockCatalog" type="Node" parent="."]
 script = ExtResource("6_block_catalog")
