@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/hotbar.gd" id="1_hotbar"]
-[ext_resource type="Script" path="res://scripts/inventory/inventory.gd" id="2_inventory"]
 
 [node name="Hotbar" type="HBoxContainer"]
 layout_mode = 3
@@ -18,7 +17,4 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 6
 script = ExtResource("1_hotbar")
-inventory_path = NodePath("Inventory")
-
-[node name="Inventory" type="Node" parent="."]
-script = ExtResource("2_inventory")
+inventory_path = NodePath("../../Inventory")
