@@ -15,12 +15,7 @@ var sun: MeshInstance3D
 
 func _ready() -> void:
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS
-	_update_size()
 	_create_scene()
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_RESIZED:
-		_update_size()
 
 func _process(delta: float) -> void:
 	for index: int in range(planets.size()):
@@ -31,10 +26,6 @@ func _process(delta: float) -> void:
 		planets[index].rotation.y += delta * (0.45 + index * 0.15)
 	if is_instance_valid(sun):
 		sun.rotation.y += delta * 0.08
-
-func _update_size() -> void:
-	if size.x <= 0 or size.y <= 0:
-		return
 
 func _create_scene() -> void:
 	var root: Node3D = Node3D.new()
