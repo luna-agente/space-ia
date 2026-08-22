@@ -34,10 +34,10 @@ script = ExtResource("7_inventory")
 [node name="Blocks" type="Node3D" parent="."]
 
 [node name="MetalBlock" parent="Blocks" instance=ExtResource("2_metal_block")]
-position = Vector3(0, 0, 94)
+position = Vector3(0, 0, 599994)
 
 [node name="Player" parent="." instance=ExtResource("4_player")]
-position = Vector3(0, 0, 100)
+position = Vector3(0, 0, 600000)
 
 [node name="BuildSystem" type="Node3D" parent="."]
 script = ExtResource("5_build_system")
