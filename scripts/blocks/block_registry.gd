@@ -24,5 +24,5 @@ func has_block(block_id: String) -> bool:
 func get_all_ids() -> Array[String]:
 	var ids: Array[String] = []
 	for key: String in _definitions.keys():
-		ids.append(key)
+		ids.append(str(key))
 	return ids
