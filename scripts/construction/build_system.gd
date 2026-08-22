@@ -2,6 +2,7 @@ extends Node3D
 
 const GRID_SIZE: float = 1.0
 const RAY_LENGTH: float = 100.0
+const ROTATION_STEP: float = 90.0
 
 @export var camera_path: NodePath
 @export var blocks_root_path: NodePath
@@ -11,6 +12,7 @@ const RAY_LENGTH: float = 100.0
 var preview: Node3D
 var preview_mesh: MeshInstance3D
 var preview_material: StandardMaterial3D
+var rotation_degrees: Vector3 = Vector3.ZERO
 
 @onready var camera: Camera3D = get_node(camera_path) as Camera3D
 @onready var blocks_root: Node3D = get_node(blocks_root_path) as Node3D
@@ -19,6 +21,7 @@ var preview_material: StandardMaterial3D
 
 func _ready() -> void:
 	_create_preview()
+	_apply_preview_rotation()
 
 func _process(_delta: float) -> void:
 	_update_preview_block()
@@ -35,6 +38,21 @@ func _process(_delta: float) -> void:
 	preview.visible = true
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		match event.keycode:
+			KEY_LEFT:
+				_rotate_preview(Vector3(0.0, -ROTATION_STEP, 0.0))
+				get_viewport().set_input_as_handled()
+			KEY_RIGHT:
+				_rotate_preview(Vector3(0.0, ROTATION_STEP, 0.0))
+				get_viewport().set_input_as_handled()
+			KEY_UP:
+				_rotate_preview(Vector3(-ROTATION_STEP, 0.0, 0.0))
+				get_viewport().set_input_as_handled()
+			KEY_DOWN:
+				_rotate_preview(Vector3(ROTATION_STEP, 0.0, 0.0))
+				get_viewport().set_input_as_handled()
+
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_LEFT:
 			_build_block()
@@ -42,6 +60,17 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
 			_remove_block()
 			get_viewport().set_input_as_handled()
+
+func _rotate_preview(rotation_delta: Vector3) -> void:
+	rotation_degrees += rotation_delta
+	rotation_degrees.x = fposmod(rotation_degrees.x, 360.0)
+	rotation_degrees.y = fposmod(rotation_degrees.y, 360.0)
+	rotation_degrees.z = fposmod(rotation_degrees.z, 360.0)
+	_apply_preview_rotation()
+
+func _apply_preview_rotation() -> void:
+	if is_instance_valid(preview):
+		preview.rotation_degrees = rotation_degrees
 
 func _raycast_from_camera() -> Dictionary:
 	var center: Vector2 = get_viewport().get_visible_rect().size * 0.5
@@ -77,6 +106,7 @@ func _build_block() -> void:
 	if block == null:
 		return
 	block.position = candidate
+	block.rotation_degrees = rotation_degrees
 	blocks_root.add_child(block)
 
 func _remove_block() -> void:
@@ -121,6 +151,7 @@ func _update_preview_block() -> void:
 	preview.process_mode = Node.PROCESS_MODE_DISABLED
 	add_child(preview)
 	preview.position = old_position
+	_apply_preview_rotation()
 	_set_preview_material()
 
 func _set_preview_material() -> void:
