@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_placeholder"]
+radius = 0.15
+height = 0.5
+
+[node name="Player" type="Node3D"]
+script = ExtResource("1_player")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(0, 0, 0)
+current = true
+
+[node name="DebugMarker" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_placeholder")
+visible = false
