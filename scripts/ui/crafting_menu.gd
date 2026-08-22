@@ -6,12 +6,13 @@ extends Control
 @onready var inventory: PlayerInventory = get_node(inventory_path) as PlayerInventory
 @onready var catalog: BlockCatalog = get_node(catalog_path) as BlockCatalog
 @onready var category_list: VBoxContainer = $Panel/Margin/VBox/Body/Categories/CategoryList
-@onready var block_list: VBoxContainer = $Panel/Margin/VBox/Body/Blocks/BlockList
+@onready var block_grid: GridContainer = $Panel/Margin/VBox/Body/Blocks/BlockGrid
 @onready var hotbar_list: HBoxContainer = $Panel/Margin/VBox/Footer/HotbarList
 @onready var status_label: Label = $Panel/Margin/VBox/Footer/Status
 
 var active_category: String = "All"
 var selected_block_id: String = ""
+var icon_cache: Dictionary[String, Texture2D] = {}
 
 func _ready() -> void:
 	visible = false
@@ -38,7 +39,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 
 func _build_categories() -> void:
-	for child in category_list.get_children():
+	for child: Node in category_list.get_children():
 		child.queue_free()
 	_add_category_button("All")
 	for category: String in catalog.registry.get_categories():
@@ -57,7 +58,7 @@ func _select_category(category: String) -> void:
 	_refresh_blocks()
 
 func _refresh_blocks() -> void:
-	for child in block_list.get_children():
+	for child: Node in block_grid.get_children():
 		child.queue_free()
 
 	for item_id: String in catalog.registry.get_all_ids():
@@ -68,22 +69,32 @@ func _refresh_blocks() -> void:
 			continue
 
 		var button: Button = Button.new()
-		button.text = "%s\n%s" % [definition.display_name, definition.category.capitalize()]
-		button.custom_minimum_size = Vector2(220, 58)
+		button.custom_minimum_size = Vector2(112, 112)
 		button.focus_mode = Control.FOCUS_NONE
+		button.text = definition.display_name
 		button.pressed.connect(_select_block.bind(item_id))
-		block_list.add_child(button)
+		button.alignment = HORIZONTAL_ALIGNMENT_CENTER
+		button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		button.expand_icon = true
+		button.icon_max_width = 72
+		button.icon_max_height = 72
+		button.tooltip_text = "%s\nCategoria: %s" % [definition.display_name, definition.category.capitalize()]
+		block_grid.add_child(button)
+		button.icon = await _get_block_icon(definition)
+		if item_id == selected_block_id:
+			button.modulate = Color(1.0, 1.0, 0.65)
 
 func _select_block(block_id: String) -> void:
 	selected_block_id = block_id
 	var definition: BlockDefinition = catalog.registry.get_definition(block_id)
 	if definition == null:
 		return
-	status_label.text = "%s selecionado. Agora clique em um slot da hotbar." % definition.display_name
+	status_label.text = "%s selecionado. Clique em um slot da hotbar." % definition.display_name
+	_refresh_blocks()
 	_refresh_hotbar()
 
 func _refresh_hotbar() -> void:
-	for child in hotbar_list.get_children():
+	for child: Node in hotbar_list.get_children():
 		child.queue_free()
 
 	for slot_index: int in range(PlayerInventory.SLOT_COUNT):
@@ -102,5 +113,46 @@ func _assign_to_hotbar(slot_index: int) -> void:
 		status_label.text = "Selecione um bloco primeiro."
 		return
 	inventory.set_hotbar_item(slot_index, selected_block_id)
-	status_label.text = "%s atribuído ao slot %d." % [inventory.get_item_display_name(selected_block_id), slot_index + 1 if slot_index < 9 else 10]
+	var display_name: String = inventory.get_item_display_name(selected_block_id)
+	status_label.text = "%s atribuído ao slot %d." % [display_name, slot_index + 1 if slot_index < 9 else 10]
 	_refresh_hotbar()
+
+func _get_block_icon(definition: BlockDefinition) -> Texture2D:
+	if icon_cache.has(definition.id):
+		return icon_cache[definition.id]
+	var icon: Texture2D = await _create_block_icon(definition.scene)
+	if icon != null:
+		icon_cache[definition.id] = icon
+	return icon
+
+func _create_block_icon(scene: PackedScene) -> Texture2D:
+	var viewport: SubViewport = SubViewport.new()
+	viewport.size = Vector2i(72, 72)
+	viewport.transparent_bg = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+	viewport.own_world_3d = true
+
+	var root: Node3D = scene.instantiate() as Node3D
+	if root == null:
+		viewport.queue_free()
+		return null
+	viewport.add_child(root)
+
+	var camera: Camera3D = Camera3D.new()
+	camera.position = Vector3(2.2, 1.6, 2.2)
+	camera.look_at_from_position(camera.position, Vector3.ZERO)
+	camera.current = true
+	viewport.add_child(camera)
+
+	var light: DirectionalLight3D = DirectionalLight3D.new()
+	light.rotation_degrees = Vector3(-35, -25, 0)
+	light.light_energy = 1.4
+	light.shadow_enabled = false
+	viewport.add_child(light)
+
+	add_child(viewport)
+	await RenderingServer.frame_post_draw
+	var image: Image = viewport.get_texture().get_image()
+	var texture: ImageTexture = ImageTexture.create_from_image(image)
+	viewport.queue_free()
+	return texture
