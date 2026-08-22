@@ -25,6 +25,8 @@ func _ready() -> void:
 	_create_preview()
 
 func _process(_delta: float) -> void:
+	_update_preview_block()
+
 	var hit := _raycast_from_camera()
 	if hit.is_empty():
 		preview.visible = false
@@ -104,6 +106,24 @@ func _create_preview() -> void:
 	add_child(preview)
 	_set_preview_material()
 
+func _update_preview_block() -> void:
+	var item_id: String = hotbar.get_selected_item()
+	if item_id.is_empty() or not BLOCK_SCENES.has(item_id):
+		preview.visible = false
+		return
+
+	if str(preview.get_meta("block_id", "")) == item_id:
+		return
+
+	var old_position := preview.position
+	preview.queue_free()
+	preview = BLOCK_SCENES[item_id].instantiate()
+	preview.name = "BuildPreview"
+	preview.process_mode = Node.PROCESS_MODE_DISABLED
+	add_child(preview)
+	preview.position = old_position
+	_set_preview_material()
+
 func _set_preview_material() -> void:
 	preview_material = StandardMaterial3D.new()
 	preview_material.albedo_color = Color(0.25, 0.8, 1.0, 0.35)
@@ -117,26 +137,3 @@ func _set_preview_material() -> void:
 	var collision := preview.get_node_or_null("Collision")
 	if collision:
 		collision.set_deferred("disabled", true)
-
-func _update_preview_block() -> void:
-	var item_id: String = hotbar.get_selected_item()
-	if item_id.is_empty() or not BLOCK_SCENES.has(item_id):
-		preview.visible = false
-		return
-
-	var current_id := str(preview.get_meta("block_id", ""))
-	if current_id == item_id:
-		return
-
-	var old_position := preview.position
-	preview.queue_free()
-	preview = BLOCK_SCENES[item_id].instantiate()
-	preview.name = "BuildPreview"
-	preview.process_mode = Node.PROCESS_MODE_DISABLED
-	add_child(preview)
-	preview.position = old_position
-	_set_preview_material()
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_PROCESS:
-		_update_preview_block()
