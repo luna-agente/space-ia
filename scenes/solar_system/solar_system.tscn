@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/sun/sun.tscn" id="1_sun"]
+[ext_resource type="PackedScene" path="res://scenes/solar_system/planet.tscn" id="2_planet"]
+[ext_resource type="PackedScene" path="res://scenes/solar_system/moon.tscn" id="3_moon"]
+
+[node name="SolarSystem" type="Node3D"]
+metadata/system_scale = "gameplay"
+
+[node name="Sun" parent="." instance=ExtResource("1_sun")]
+
+[node name="Planets" type="Node3D" parent="."]
+
+[node name="Planet1" parent="Planets" instance=ExtResource("2_planet")]
+body_id = "planet_1"
+radius_m = 100000.0
+orbit_radius_m = 10000000.0
+position = Vector3(10000000, 0, 0)
+
+[node name="Planet2" parent="Planets" instance=ExtResource("2_planet")]
+body_id = "planet_2"
+radius_m = 150000.0
+orbit_radius_m = 25000000.0
+position = Vector3(0, 0, 25000000)
+
+[node name="Moon1" parent="Planet2/Moons" instance=ExtResource("3_moon")]
+body_id = "planet_2_moon_1"
+orbit_radius_m = 500000.0
+position = Vector3(500000, 0, 0)
+
+[node name="Planet3" parent="Planets" instance=ExtResource("2_planet")]
+body_id = "planet_3"
+radius_m = 200000.0
+orbit_radius_m = 50000000.0
+position = Vector3(-50000000, 0, 0)
+
+[node name="Moon1" parent="Planet3/Moons" instance=ExtResource("3_moon")]
+body_id = "planet_3_moon_1"
+orbit_radius_m = 700000.0
+position = Vector3(700000, 0, 0)
+
+[node name="Moon2" parent="Planet3/Moons" instance=ExtResource("3_moon")]
+body_id = "planet_3_moon_2"
+orbit_radius_m = 1100000.0
+position = Vector3(-1100000, 0, 0)
