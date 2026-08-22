@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1")
+gameplay_root_path = NodePath("../Gameplay")
+menu_root_path = NodePath(".")
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 110.0
+offset_right = 1152.0
+offset_bottom = 170.0
+text = "SPACE-IA"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="."]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 175.0
+offset_right = 1152.0
+offset_bottom = 210.0
+text = "Construção espacial por blocos"
+horizontal_alignment = 1
+
+[node name="Play" type="Button" parent="."]
+layout_mode = 0
+offset_left = 476.0
+offset_top = 300.0
+offset_right = 676.0
+offset_bottom = 360.0
+text = "Jogar"
+
+[node name="Quit" type="Button" parent="."]
+layout_mode = 0
+offset_left = 476.0
+offset_top = 375.0
+offset_right = 676.0
+offset_bottom = 435.0
+text = "Sair"
+
+[connection signal="pressed" from="Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Quit" to="." method="_on_quit_pressed"]
