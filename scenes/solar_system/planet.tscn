@@ -3,14 +3,16 @@
 [ext_resource type="Script" path="res://scripts/solar_system/solar_body.gd" id="1_body"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_planet"]
-radius = 100000.0
-height = 200000.0
-radial_segments = 32
-rings = 16
+radius = 1.0
+height = 2.0
+radial_segments = 48
+rings = 24
 
 [node name="Planet" type="Node3D"]
 script = ExtResource("1_body")
 body_type = "planet"
+has_atmosphere = true
+gravity_enabled = false
 
 [node name="Visual" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_planet")
