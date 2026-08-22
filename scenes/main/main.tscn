@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/blocks/metal_block.tscn" id="1_metal_block"]
-[ext_resource type="PackedScene" path="res://scenes/ui/hotbar.tscn" id="2_hotbar"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="3_player"]
-[ext_resource type="Script" path="res://scripts/construction/build_system.gd" id="4_build_system"]
+[ext_resource type="PackedScene" path="res://scenes/sun/sun.tscn" id="1_sun"]
+[ext_resource type="PackedScene" path="res://scenes/blocks/metal_block.tscn" id="2_metal_block"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hotbar.tscn" id="3_hotbar"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="4_player"]
+[ext_resource type="Script" path="res://scripts/construction/build_system.gd" id="5_build_system"]
 
 [sub_resource type="Environment" id="Environment_space"]
 background_mode = 1
@@ -15,21 +16,22 @@ background_color = Color(0.005, 0.008, 0.02, 1)
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_space")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-rotation_degrees = Vector3(-35, -25, 0)
+[node name="Sun" parent="." instance=ExtResource("1_sun")]
 
 [node name="Blocks" type="Node3D" parent="."]
 
-[node name="MetalBlock" parent="Blocks" instance=ExtResource("1_metal_block")]
+[node name="MetalBlock" parent="Blocks" instance=ExtResource("2_metal_block")]
+position = Vector3(0, 0, 94)
 
-[node name="Player" parent="." instance=ExtResource("3_player")]
-position = Vector3(0, 0, 4)
+[node name="Player" parent="." instance=ExtResource("4_player")]
+position = Vector3(0, 0, 100)
 
 [node name="BuildSystem" type="Node3D" parent="."]
-script = ExtResource("4_build_system")
+script = ExtResource("5_build_system")
 camera_path = NodePath("../Player/Camera3D")
 blocks_root_path = NodePath("../Blocks")
+hotbar_path = NodePath("../UI/Hotbar")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
-[node name="Hotbar" parent="UI" instance=ExtResource("2_hotbar")]
+[node name="Hotbar" parent="UI" instance=ExtResource("3_hotbar")]
