@@ -15,7 +15,7 @@
 
 [sub_resource type="Environment" id="Environment_space"]
 background_mode = 1
-background_energy_multiplier = 0.35
+background_energy_multiplier = 0.08
 background_color = Color(0.005, 0.008, 0.02, 1)
 
 [node name="Main" type="Node3D"]
