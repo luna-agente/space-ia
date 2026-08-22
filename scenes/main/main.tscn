@@ -1,12 +1,12 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/blocks/metal_block.tscn" id="1_metal_block"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hotbar.tscn" id="2_hotbar"]
 
 [sub_resource type="Environment" id="Environment_space"]
 background_mode = 1
 background_energy_multiplier = 0.35
 background_color = Color(0.005, 0.008, 0.02, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_origin"]
-size = Vector3(1, 1, 1)
 
 [node name="Main" type="Node3D"]
 
@@ -16,6 +16,12 @@ environment = SubResource("Environment_space")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 rotation_degrees = Vector3(-35, -25, 0)
 
-[node name="Origin" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_origin")
-visible = false
+[node name="Camera3D" type="Camera3D" parent="."]
+position = Vector3(0, 0, 4)
+current = true
+
+[node name="MetalBlock" parent="." instance=ExtResource("1_metal_block")]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Hotbar" parent="UI" instance=ExtResource("2_hotbar")]
