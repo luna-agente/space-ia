@@ -36,3 +36,10 @@ func get_all_ids() -> Array[String]:
 	for key: String in _definitions.keys():
 		ids.append(str(key))
 	return ids
+
+func get_categories() -> Array[String]:
+	var categories: Array[String] = []
+	for definition: BlockDefinition in _definitions.values():
+		if not categories.has(definition.category):
+			categories.append(definition.category)
+	return categories
