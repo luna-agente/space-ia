@@ -21,10 +21,17 @@ metadata/gravity_source = false
 [node name="Visual" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_sun")
 
-[node name="Light" type="DirectionalLight3D" parent="."]
+[node name="GlobalLight" type="DirectionalLight3D" parent="."]
 rotation_degrees = Vector3(-35, -25, 0)
+light_color = Color(1, 0.93, 0.78, 1)
 light_energy = 1.5
 shadow_enabled = true
+
+[node name="GlowLight" type="OmniLight3D" parent="."]
+light_color = Color(1, 0.62, 0.2, 1)
+light_energy = 6.0
+omni_range = 120.0
+shadow_enabled = false
 
 [node name="Collision" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_sun")
