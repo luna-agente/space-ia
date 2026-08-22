@@ -14,7 +14,7 @@ func _ready() -> void:
 	_set_mouse_captured()
 
 func _process(_delta: float) -> void:
-	var menu_open := inventory_menu.visible or crafting_menu.visible
+	var menu_open: bool = inventory_menu.visible or crafting_menu.visible
 	player.set_process(not menu_open)
 	player.set_process_input(not menu_open)
 	hotbar.visible = not menu_open
@@ -26,16 +26,24 @@ func _process(_delta: float) -> void:
 func _unhandled_key_input(event: InputEvent) -> void:
 	if not event.pressed or event.echo:
 		return
-	if event.keycode == KEY_I:
-		if crafting_menu.visible:
-			crafting_menu.toggle()
-		inventory_menu.toggle()
-		get_viewport().set_input_as_handled()
-	elif event.keycode == KEY_T:
-		if inventory_menu.visible:
+
+	match event.keycode:
+		KEY_I:
+			if crafting_menu.visible:
+				crafting_menu.toggle()
 			inventory_menu.toggle()
-		crafting_menu.toggle()
-		get_viewport().set_input_as_handled()
+			get_viewport().set_input_as_handled()
+		KEY_T:
+			if inventory_menu.visible:
+				inventory_menu.toggle()
+			crafting_menu.toggle()
+			get_viewport().set_input_as_handled()
+		KEY_ESCAPE:
+			if inventory_menu.visible:
+				inventory_menu.toggle()
+			elif crafting_menu.visible:
+				crafting_menu.toggle()
+			get_viewport().set_input_as_handled()
 
 func _set_mouse_captured() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
