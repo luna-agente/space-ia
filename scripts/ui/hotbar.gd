@@ -1,17 +1,6 @@
 extends HBoxContainer
 
-const SLOT_COUNT := 10
-const ITEM_LABELS: Dictionary[String, String] = {
-	"": "—",
-	"metal_1x1x1": "Metal",
-	"triangle_1x1x1": "Tri",
-	"cylinder_1x1x1": "Cyl",
-	"cube_1x2x1": "Cube 1x2",
-	"half_cube_1x1x1": "Half",
-	"wedge_1x1x1": "Wedge",
-	"cone_1x1x1": "Cone",
-	"quarter_cube_1x1x1": "Quarter",
-}
+const SLOT_COUNT: int = 10
 
 @export var inventory_path: NodePath
 
@@ -20,7 +9,7 @@ var slots: Array[Button] = []
 @onready var inventory: PlayerInventory = get_node(inventory_path) as PlayerInventory
 
 func _ready() -> void:
-	for index in range(SLOT_COUNT):
+	for index: int in range(SLOT_COUNT):
 		var slot: Button = Button.new()
 		slot.custom_minimum_size = Vector2(68, 58)
 		slot.focus_mode = Control.FOCUS_NONE
@@ -28,7 +17,9 @@ func _ready() -> void:
 		slot.pressed.connect(select_slot.bind(index))
 		add_child(slot)
 		slots.append(slot)
+	_update_selection()
 
+func _process(_delta: float) -> void:
 	_update_selection()
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -49,11 +40,12 @@ func get_selected_item() -> String:
 	return inventory.get_selected_item()
 
 func _update_selection() -> void:
-	for index in slots.size():
-		var item_id: String = inventory.get_item(index)
+	for index: int in range(slots.size()):
+		var item_id: String = inventory.get_hotbar_item(index)
 		var key_number: int = index + 1 if index < 9 else 0
-		var label: String = ITEM_LABELS.get(item_id, item_id) as String
-		slots[index].text = "%d\n%s" % [key_number, label]
+		var label: String = inventory.get_item_display_name(item_id)
+		var count: int = inventory.get_item_count(item_id)
+		slots[index].text = "%d\n%s" % [key_number, label] if item_id.is_empty() else "%d\n%s\n%d" % [key_number, label, count]
 		slots[index].modulate = Color(1.0, 1.0, 0.65) if index == selected_slot else Color.WHITE
 
 func _number_from_key(keycode: Key) -> int:
