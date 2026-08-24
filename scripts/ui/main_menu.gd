@@ -8,6 +8,8 @@ extends Control
 @onready var build_system: Node = get_node(build_system_path)
 @onready var ui_manager: Node = get_node(ui_manager_path)
 
+var solar_system_preview: SubViewportContainer
+
 func _ready() -> void:
 	visible = true
 	player.process_mode = Node.PROCESS_MODE_DISABLED
@@ -32,12 +34,13 @@ func _setup_menu_layout() -> void:
 
 func _create_solar_system_preview() -> void:
 	var container: SubViewportContainer = SubViewportContainer.new()
-	container.name = "SolarSystem"
+	container.name = "SolarSystemPreview"
 	container.position = Vector2(620.0, 30.0)
 	container.size = Vector2(532.0, 660.0)
 	container.stretch = true
 	container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(container)
+	solar_system_preview = container
 
 	var viewport: SubViewport = SubViewport.new()
 	viewport.name = "Viewport"
@@ -49,6 +52,10 @@ func _create_solar_system_preview() -> void:
 	container.add_child(viewport)
 
 func _on_play_pressed() -> void:
+	if is_instance_valid(solar_system_preview):
+		solar_system_preview.queue_free()
+		solar_system_preview = null
+
 	visible = false
 	player.process_mode = Node.PROCESS_MODE_INHERIT
 	build_system.process_mode = Node.PROCESS_MODE_INHERIT
