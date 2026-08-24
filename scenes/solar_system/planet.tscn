@@ -5,12 +5,13 @@
 [sub_resource type="SphereMesh" id="SphereMesh_planet"]
 radius = 1.0
 height = 2.0
-radial_segments = 48
-rings = 24
+radial_segments = 64
+rings = 32
 
 [node name="Planet" type="Node3D"]
 script = ExtResource("1_body")
 body_type = "planet"
+radius_m = 100000.0
 has_atmosphere = true
 gravity_enabled = false
 
